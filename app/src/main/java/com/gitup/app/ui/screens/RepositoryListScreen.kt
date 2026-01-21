@@ -30,7 +30,6 @@ import coil.request.ImageRequest
 import com.gitup.app.data.model.Repository
 import com.gitup.app.data.storage.AccountManager
 import com.gitup.app.ui.components.EmptyState
-import com.gitup.app.ui.components.LanguageIndicator
 import com.gitup.app.ui.components.RepositoryCardSkeleton
 import com.gitup.app.ui.theme.Spacing
 import com.gitup.app.ui.theme.AccentColors
