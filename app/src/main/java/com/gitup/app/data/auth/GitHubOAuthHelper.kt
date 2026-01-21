@@ -14,9 +14,8 @@ import org.json.JSONObject
 object GitHubOAuthHelper {
     
     // GitHub OAuth App credentials
-    // IMPORTANT: Replace these with your actual OAuth App credentials from GitHub
-    private const val CLIENT_ID = "Ov23liXXXXXXXXXXXXXX" // Replace with your Client ID
-    private const val CLIENT_SECRET = "your_client_secret_here" // Replace with your Client Secret
+    private const val CLIENT_ID = "Ov23liu97i7G9GDy20L2"
+    private const val CLIENT_SECRET = "fa1d5faf8d5068a6567e26ee0e3ebc17d6403438"
     private const val REDIRECT_URI = "gitup://callback"
     
     // GitHub OAuth URLs
