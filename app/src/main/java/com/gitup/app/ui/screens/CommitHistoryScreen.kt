@@ -19,7 +19,6 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.gitup.app.data.model.GitCommit
 import com.gitup.app.ui.components.CommitItemSkeleton
 import com.gitup.app.ui.components.EmptyState
-import com.gitup.app.ui.components.SHAChip
 import com.gitup.app.ui.theme.Spacing
 import com.gitup.app.ui.theme.AccentColors
 import com.gitup.app.ui.viewmodel.CommitHistoryViewModel
