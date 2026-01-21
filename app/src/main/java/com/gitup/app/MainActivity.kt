@@ -25,7 +25,6 @@ import com.gitup.app.ui.screens.AddAccountScreen
 import com.gitup.app.ui.screens.FileBrowserScreen
 import com.gitup.app.ui.screens.FileViewerScreen
 import com.gitup.app.ui.screens.ManageAccountsScreen
-import com.gitup.app.ui.screens.ProfileScreen
 import com.gitup.app.ui.screens.RepositoryListScreen
 import com.gitup.app.ui.screens.WelcomeScreen
 import com.gitup.app.ui.theme.GitUpTheme
@@ -64,13 +63,19 @@ fun GitUpApp() {
     var pendingRepoData by remember { mutableStateOf<Triple<String, String, String>?>(null) }
     var pendingManifestPath by remember { mutableStateOf<String?>(null) }
     
+    // Track if we've handled the OAuth callback
+    var hasHandledOAuthCallback by remember { mutableStateOf(false) }
+    
     // Handle OAuth callback
     val activity = context as? ComponentActivity
     LaunchedEffect(Unit) {
         activity?.intent?.data?.let { uri ->
-            if (uri.scheme == "gitup" && uri.host == "callback") {
+            if (uri.scheme == "gitup" && uri.host == "callback" && !hasHandledOAuthCallback) {
+                hasHandledOAuthCallback = true
                 // Navigate to add_account and pass the URI
-                navController.navigate("add_account?oauth_callback=true")
+                navController.navigate("add_account") {
+                    popUpTo(0) { inclusive = true }
+                }
             }
         }
     }
@@ -147,34 +152,11 @@ fun GitUpApp() {
                     navController.navigate("file_browser/${repository.owner.login}/${repository.name}/${repository.defaultBranch}")
                 },
                 onManageAccounts = {
-                    navController.navigate("profile")
-                }
-            )
-        }
-        
-        composable("profile") {
-            val viewModel: com.gitup.app.ui.viewmodel.RepositoryListViewModel = viewModel()
-            val uiState by viewModel.uiState.collectAsStateWithLifecycle()
-            
-            // Load data when profile opens
-            LaunchedEffect(Unit) {
-                viewModel.loadRepositories()
-            }
-            
-            ProfileScreen(
-                user = uiState.user,
-                repositories = uiState.repositories,
-                onNavigateToSettings = {
-                    // Navigate to settings if you have one
-                },
-                onNavigateToRepository = { repository ->
-                    navController.navigate("file_browser/${repository.owner.login}/${repository.name}/${repository.defaultBranch}")
-                },
-                onNavigateToManageAccounts = {
                     navController.navigate("manage_accounts")
                 }
             )
         }
+        
         
         composable("file_browser/{owner}/{repo}/{branch}") { backStackEntry ->
             val owner = backStackEntry.arguments?.getString("owner") ?: return@composable

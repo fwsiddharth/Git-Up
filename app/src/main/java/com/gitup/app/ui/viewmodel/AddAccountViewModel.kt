@@ -29,7 +29,7 @@ class AddAccountViewModel(application: Application) : AndroidViewModel(applicati
     private val _uiState = MutableStateFlow(AddAccountUiState())
     val uiState: StateFlow<AddAccountUiState> = _uiState.asStateFlow()
     
-    fun addAccount(token: String) {
+    fun addAccount(token: String, isOAuth: Boolean = false) {
         viewModelScope.launch {
             _uiState.value = AddAccountUiState(isLoading = true)
             
@@ -42,7 +42,8 @@ class AddAccountViewModel(application: Application) : AndroidViewModel(applicati
                         username = user.login,
                         token = token,
                         avatarUrl = user.avatarUrl,
-                        isActive = !accountManager.hasAccounts() // First account is active
+                        isActive = !accountManager.hasAccounts(), // First account is active
+                        loginMethod = if (isOAuth) "OAuth" else "PAT"
                     )
                     accountManager.saveAccount(account)
                     _uiState.value = AddAccountUiState(isSuccess = true)
@@ -78,8 +79,8 @@ class AddAccountViewModel(application: Application) : AndroidViewModel(applicati
             
             tokenResult.fold(
                 onSuccess = { token ->
-                    // Validate token and create account
-                    addAccount(token)
+                    // Validate token and create account (mark as OAuth)
+                    addAccount(token, isOAuth = true)
                 },
                 onFailure = { error ->
                     _uiState.value = AddAccountUiState(

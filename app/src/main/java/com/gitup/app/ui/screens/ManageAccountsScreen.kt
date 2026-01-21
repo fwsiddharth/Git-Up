@@ -232,65 +232,91 @@ fun ManageAccountsScreen(
                             verticalAlignment = Alignment.CenterVertically
                         ) {
                             Text(
-                                text = "Personal Access Token",
+                                text = if (account.getAuthMethod() == "OAuth") "Login Method" else "Personal Access Token",
                                 style = MaterialTheme.typography.labelMedium,
                                 fontWeight = FontWeight.Bold
                             )
                             
-                            Row(
-                                horizontalArrangement = Arrangement.spacedBy(4.dp)
-                            ) {
-                                FilledTonalIconButton(
-                                    onClick = {
-                                        val clip = android.content.ClipData.newPlainText("GitHub Token", account.token)
-                                        clipboardManager.setPrimaryClip(clip)
-                                        scope.launch {
-                                            snackbarHostState.showSnackbar(
-                                                message = "Token copied to clipboard",
-                                                duration = SnackbarDuration.Short
-                                            )
-                                        }
-                                    },
-                                    modifier = Modifier.size(32.dp),
-                                    colors = IconButtonDefaults.filledTonalIconButtonColors(
-                                        containerColor = AccentColors.blue.copy(alpha = 0.2f),
-                                        contentColor = AccentColors.blue
-                                    )
+                            if (account.getAuthMethod() != "OAuth") {
+                                Row(
+                                    horizontalArrangement = Arrangement.spacedBy(4.dp)
                                 ) {
-                                    Icon(
-                                        imageVector = Icons.Default.ContentCopy,
-                                        contentDescription = "Copy",
-                                        modifier = Modifier.size(16.dp)
-                                    )
-                                }
-                                
-                                FilledTonalIconButton(
-                                    onClick = { showToken = !showToken },
-                                    modifier = Modifier.size(32.dp),
-                                    colors = IconButtonDefaults.filledTonalIconButtonColors(
-                                        containerColor = MaterialTheme.colorScheme.secondaryContainer,
-                                        contentColor = MaterialTheme.colorScheme.onSecondaryContainer
-                                    )
-                                ) {
-                                    Icon(
-                                        imageVector = if (showToken) Icons.Default.VisibilityOff else Icons.Default.Visibility,
-                                        contentDescription = if (showToken) "Hide" else "Show",
-                                        modifier = Modifier.size(16.dp)
-                                    )
+                                    FilledTonalIconButton(
+                                        onClick = {
+                                            val clip = android.content.ClipData.newPlainText("GitHub Token", account.token)
+                                            clipboardManager.setPrimaryClip(clip)
+                                            scope.launch {
+                                                snackbarHostState.showSnackbar(
+                                                    message = "Token copied to clipboard",
+                                                    duration = SnackbarDuration.Short
+                                                )
+                                            }
+                                        },
+                                        modifier = Modifier.size(32.dp),
+                                        colors = IconButtonDefaults.filledTonalIconButtonColors(
+                                            containerColor = AccentColors.blue.copy(alpha = 0.2f),
+                                            contentColor = AccentColors.blue
+                                        )
+                                    ) {
+                                        Icon(
+                                            imageVector = Icons.Default.ContentCopy,
+                                            contentDescription = "Copy",
+                                            modifier = Modifier.size(16.dp)
+                                        )
+                                    }
+                                    
+                                    FilledTonalIconButton(
+                                        onClick = { showToken = !showToken },
+                                        modifier = Modifier.size(32.dp),
+                                        colors = IconButtonDefaults.filledTonalIconButtonColors(
+                                            containerColor = MaterialTheme.colorScheme.secondaryContainer,
+                                            contentColor = MaterialTheme.colorScheme.onSecondaryContainer
+                                        )
+                                    ) {
+                                        Icon(
+                                            imageVector = if (showToken) Icons.Default.VisibilityOff else Icons.Default.Visibility,
+                                            contentDescription = if (showToken) "Hide" else "Show",
+                                            modifier = Modifier.size(16.dp)
+                                        )
+                                    }
                                 }
                             }
                         }
                         
                         Surface(
                             shape = RoundedCornerShape(8.dp),
-                            color = MaterialTheme.colorScheme.surfaceVariant
+                            color = if (account.getAuthMethod() == "OAuth") 
+                                AccentColors.green.copy(alpha = 0.1f) 
+                            else 
+                                MaterialTheme.colorScheme.surfaceVariant
                         ) {
-                            Text(
-                                text = if (showToken) account.token else "•".repeat(40),
-                                style = MaterialTheme.typography.bodySmall,
-                                modifier = Modifier.padding(12.dp),
-                                fontFamily = androidx.compose.ui.text.font.FontFamily.Monospace
-                            )
+                            if (account.getAuthMethod() == "OAuth") {
+                                Row(
+                                    modifier = Modifier.padding(12.dp),
+                                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                                    verticalAlignment = Alignment.CenterVertically
+                                ) {
+                                    Icon(
+                                        Icons.Default.CheckCircle,
+                                        contentDescription = null,
+                                        tint = AccentColors.green,
+                                        modifier = Modifier.size(20.dp)
+                                    )
+                                    Text(
+                                        text = "Logged in with GitHub OAuth",
+                                        style = MaterialTheme.typography.bodyMedium,
+                                        fontWeight = FontWeight.Medium,
+                                        color = AccentColors.green
+                                    )
+                                }
+                            } else {
+                                Text(
+                                    text = if (showToken) account.token else "•".repeat(40),
+                                    style = MaterialTheme.typography.bodySmall,
+                                    modifier = Modifier.padding(12.dp),
+                                    fontFamily = androidx.compose.ui.text.font.FontFamily.Monospace
+                                )
+                            }
                         }
                     }
                     

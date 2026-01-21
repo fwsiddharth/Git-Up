@@ -2,6 +2,7 @@ package com.gitup.app.ui.screens
 
 import androidx.compose.animation.*
 import androidx.compose.animation.core.tween
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
@@ -83,7 +84,8 @@ fun AddAccountScreen(
             )
         }
     ) { padding ->
-        Column(
+        Box(modifier = Modifier.fillMaxSize()) {
+            Column(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(padding)
@@ -203,7 +205,7 @@ fun AddAccountScreen(
                 )
             }
             
-            Spacer(modifier = Modifier.height(24.dp)))
+            Spacer(modifier = Modifier.height(24.dp))
             
             // Token Input
             Column(
@@ -468,6 +470,39 @@ fun AddAccountScreen(
             
             Spacer(modifier = Modifier.height(24.dp))
         }
+        
+        // Full-screen loading overlay during OAuth processing
+        if (uiState.isLoading) {
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(MaterialTheme.colorScheme.background.copy(alpha = 0.95f)),
+                contentAlignment = Alignment.Center
+            ) {
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.spacedBy(16.dp)
+                ) {
+                    CircularProgressIndicator(
+                        modifier = Modifier.size(48.dp),
+                        color = AccentColors.purple,
+                        strokeWidth = 4.dp
+                    )
+                    Text(
+                        text = "Connecting to GitHub...",
+                        style = MaterialTheme.typography.titleMedium,
+                        fontWeight = FontWeight.SemiBold,
+                        color = MaterialTheme.colorScheme.onBackground
+                    )
+                    Text(
+                        text = "This may take a few seconds",
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                }
+            }
+        }
+    }
     }
 }
 
