@@ -147,7 +147,7 @@ fun AddAccountScreen(
                 lineHeight = 20.sp
             )
             
-            Spacer(modifier = Modifier.height(32.dp)
+            Spacer(modifier = Modifier.height(32.dp))
             
             // OAuth Login Button (Primary)
             Button(
