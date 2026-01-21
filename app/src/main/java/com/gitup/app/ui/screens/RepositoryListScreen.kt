@@ -157,11 +157,23 @@ fun RepositoryListScreen(
         ) {
             // Search Bar
             if (!uiState.isLoading && uiState.repositories.isNotEmpty()) {
-                MonochromeSearchBar(
-                    query = searchQuery,
-                    onQueryChange = { searchQuery = it },
-                    placeholder = "Search repositories...",
-                    modifier = Modifier.padding(horizontal = Spacing.m, vertical = Spacing.xs)
+                OutlinedTextField(
+                    value = searchQuery,
+                    onValueChange = { searchQuery = it },
+                    placeholder = { Text("Search repositories...") },
+                    leadingIcon = { Icon(Icons.Default.Search, null) },
+                    trailingIcon = {
+                        if (searchQuery.isNotEmpty()) {
+                            IconButton(onClick = { searchQuery = "" }) {
+                                Icon(Icons.Default.Clear, "Clear")
+                            }
+                        }
+                    },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = Spacing.m, vertical = Spacing.xs),
+                    shape = RoundedCornerShape(12.dp),
+                    singleLine = true
                 )
                 
                 // Filter Chips
@@ -171,24 +183,24 @@ fun RepositoryListScreen(
                     horizontalArrangement = Arrangement.spacedBy(Spacing.xs)
                 ) {
                     item {
-                        MonochromeFilterChip(
-                            label = "All",
+                        FilterChip(
                             selected = selectedFilter == RepoFilter.ALL,
-                            onClick = { selectedFilter = RepoFilter.ALL }
+                            onClick = { selectedFilter = RepoFilter.ALL },
+                            label = { Text("All") }
                         )
                     }
                     item {
-                        MonochromeFilterChip(
-                            label = "Private",
+                        FilterChip(
                             selected = selectedFilter == RepoFilter.PRIVATE,
-                            onClick = { selectedFilter = RepoFilter.PRIVATE }
+                            onClick = { selectedFilter = RepoFilter.PRIVATE },
+                            label = { Text("Private") }
                         )
                     }
                     item {
-                        MonochromeFilterChip(
-                            label = "Public",
+                        FilterChip(
                             selected = selectedFilter == RepoFilter.PUBLIC,
-                            onClick = { selectedFilter = RepoFilter.PUBLIC }
+                            onClick = { selectedFilter = RepoFilter.PUBLIC },
+                            label = { Text("Public") }
                         )
                     }
                 }
